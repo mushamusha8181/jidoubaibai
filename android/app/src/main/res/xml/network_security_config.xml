@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- The local bridge may use HTTP. Android code restricts HTTP to private/loopback
+         addresses, authenticates requests, verifies HMAC-signed success responses,
+         and encrypts the DeepSeek key separately with AES-GCM. -->
+    <base-config cleartextTrafficPermitted="true" />
+</network-security-config>

@@ -1,0 +1,8 @@
+.gradle/
+.idea/
+local.properties
+**/build/
+windows/.venv/
+**/__pycache__/
+.pytest_cache/
+*.pyc
