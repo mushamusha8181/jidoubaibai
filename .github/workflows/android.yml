@@ -6,7 +6,7 @@ on:
     branches: [ main ]
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   build:
@@ -14,7 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Apply MUSHIN Glass source patch
+      - name: Apply build-only MUSHIN Glass patch
         run: |
           python3 - <<'PY'
           from pathlib import Path
@@ -36,16 +36,6 @@ jobs:
           if apply_line not in gradle:
               build.write_text(gradle.rstrip() + '\n\n' + apply_line + '\n', encoding='utf-8')
           PY
-
-      - name: Commit MUSHIN Glass patch if needed
-        run: |
-          if ! git diff --quiet; then
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add android/app/build.gradle.kts android/app/src/main/java/jp/mushamusha/autotrade/ui/AutoTradeApp.kt
-            git commit -m "Apply MUSHIN Glass design system [skip ci]"
-            git push
-          fi
 
       - uses: actions/setup-java@v5
         with:
