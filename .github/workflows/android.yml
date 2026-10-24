@@ -5,11 +5,47 @@ on:
   push:
     branches: [ main ]
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Apply MUSHIN Glass source patch
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          app = Path('android/app/src/main/java/jp/mushamusha/autotrade/ui/AutoTradeApp.kt')
+          text = app.read_text(encoding='utf-8')
+          marker = 'MaterialTheme(colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()) {'
+          if marker in text:
+              text = text.replace(marker, 'MushinGlassTheme {', 1)
+          imp = 'import jp.mushamusha.mushinglass.MushinGlassTheme'
+          if imp not in text:
+              anchor = 'import jp.mushamusha.autotrade.Mover'
+              text = text.replace(anchor, anchor + '\n' + imp, 1)
+          app.write_text(text, encoding='utf-8')
+
+          build = Path('android/app/build.gradle.kts')
+          gradle = build.read_text(encoding='utf-8')
+          apply_line = 'apply(from = uri("https://raw.githubusercontent.com/mushamusha8181/light/main/mushin-glass.gradle"))'
+          if apply_line not in gradle:
+              build.write_text(gradle.rstrip() + '\n\n' + apply_line + '\n', encoding='utf-8')
+          PY
+
+      - name: Commit MUSHIN Glass patch if needed
+        run: |
+          if ! git diff --quiet; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add android/app/build.gradle.kts android/app/src/main/java/jp/mushamusha/autotrade/ui/AutoTradeApp.kt
+            git commit -m "Apply MUSHIN Glass design system [skip ci]"
+            git push
+          fi
 
       - uses: actions/setup-java@v5
         with:
