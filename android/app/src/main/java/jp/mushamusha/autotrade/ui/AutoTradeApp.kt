@@ -27,11 +27,12 @@ import jp.mushamusha.autotrade.AiUsage
 import jp.mushamusha.autotrade.AppUiState
 import jp.mushamusha.autotrade.AppViewModel
 import jp.mushamusha.autotrade.Mover
+import jp.mushamusha.mushinglass.MushinGlassTheme
 
 @Composable
 fun AutoTradeApp(vm: AppViewModel = viewModel()) {
     val state by vm.state.collectAsState()
-    MaterialTheme(colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()) {
+    MushinGlassTheme {
         when {
             state.loading -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
             !state.onboardingDone -> OnboardingScreen(vm)

