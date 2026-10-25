@@ -1,0 +1,33 @@
+name: One-off flat MUSHIN auto trade buttons
+
+on:
+  push:
+    paths:
+      - 'android/MUSHIN_FLAT_BUTTON_TRIGGER'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Flatten Compose buttons
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          p=Path('android/app/src/main/java/jp/mushamusha/autotrade/ui/AutoTradeApp.kt')
+          s=p.read_text()
+          s2,n=re.subn(r'(?m)^(\s*)Button\(',r'\1OutlinedButton(',s)
+          if n < 1: raise SystemExit('no standalone Button usages found')
+          p.write_text(s2)
+          print('flattened',n,'buttons')
+          PY
+          rm -f android/MUSHIN_FLAT_BUTTON_TRIGGER android/.github/workflows/oneoff-flat-mushin-buttons.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'Flatten auto trade controls for MUSHIN Glass'
+          git push
