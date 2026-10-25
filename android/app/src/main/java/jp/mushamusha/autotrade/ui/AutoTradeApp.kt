@@ -61,7 +61,7 @@ private fun OnboardingScreen(vm: AppViewModel) {
                 Text(pages[step].first, style = MaterialTheme.typography.titleLarge)
                 Text(pages[step].second, style = MaterialTheme.typography.bodyLarge)
             }
-            Button(
+            OutlinedButton(
                 onClick = { if (step < pages.lastIndex) step++ else vm.completeOnboarding() },
                 modifier = Modifier.fillMaxWidth().height(48.dp),
             ) { Text(if (step < pages.lastIndex) "次へ" else "はじめる") }
@@ -206,7 +206,7 @@ private fun ComparisonCard(state: AppUiState, vm: AppViewModel) {
                 val limitText = if (limit == 0) "無制限" else "$limit tokens"
                 Text("本日 ${usage.totalTokens} / $limitText　${usage.requests ?: 0}回", style = MaterialTheme.typography.bodySmall)
             }
-            Button(
+            OutlinedButton(
                 onClick = vm::runAiComparison,
                 enabled = state.bridgeOnline && state.deepSeekConfigured && state.freshQuoteCount > 0 && !state.aiRunning,
                 modifier = Modifier.fillMaxWidth().height(48.dp),
@@ -346,7 +346,7 @@ private fun SettingsScreen(state: AppUiState, vm: AppViewModel) {
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                         modifier = Modifier.fillMaxWidth(),
                     )
-                    Button(
+                    OutlinedButton(
                         onClick = { vm.saveConnection(url, pairing); pairing = "" },
                         enabled = url.isNotBlank() && pairing.length == 64,
                         modifier = Modifier.fillMaxWidth().height(48.dp),
@@ -363,7 +363,7 @@ private fun SettingsScreen(state: AppUiState, vm: AppViewModel) {
                         deepSeek, { deepSeek = it }, label = { Text("DeepSeek APIキー") }, singleLine = true,
                         visualTransformation = PasswordVisualTransformation(), keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password), modifier = Modifier.fillMaxWidth(),
                     )
-                    Button(
+                    OutlinedButton(
                         onClick = { val chars = deepSeek.toCharArray(); deepSeek = ""; vm.saveDeepSeekKey(chars) },
                         enabled = state.paired && deepSeek.isNotBlank(),
                         modifier = Modifier.fillMaxWidth().height(48.dp),
@@ -378,7 +378,7 @@ private fun SettingsScreen(state: AppUiState, vm: AppViewModel) {
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         modifier = Modifier.fillMaxWidth(),
                     )
-                    Button(
+                    OutlinedButton(
                         onClick = { vm.saveAiTokenLimit(tokenLimit.toIntOrNull() ?: state.aiDailyTokenLimit) },
                         enabled = state.paired && tokenLimit.isNotBlank(),
                         modifier = Modifier.fillMaxWidth().height(48.dp),
